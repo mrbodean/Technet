@@ -6,6 +6,13 @@ Describe "Set-FileAttributes Function Tests" {
     $VaildPath = "TestDrive:\test.txt"
     $InVaildPath = "TestDrive:\DoesNotExist.txt"
     New-Item -Path $VaildPath
+    $VaildPath1 = "TestDrive:\test\test1.txt"
+    $VaildPath2 = "TestDrive:\test\test2.txt"
+    $InVaildPath = "TestDrive:\DoesNotExist.txt"
+    new-item -path "TestDrive:\test" -ItemType directory
+    New-Item -Path $VaildPath1
+    New-Item -Path $VaildPath2
+    $attributes = 'ReadOnly','Hidden','System','Archive' #Other then Normal these are the only Attributes supported by Set-ItemProperty
     Context "Parameter Tests" {
         It "Verify -Attribute Parameter ValidateScript" {
             {Set-FileAttributes -Attribute Invalid -Path $VaildPath} | Should Throw "does not belong to the set"
@@ -13,7 +20,6 @@ Describe "Set-FileAttributes Function Tests" {
         }
         It "Verify -Attribute Parameter ValidateSet" {
             {Set-FileAttributes -Attribute Invalid -Path $VaildPath} | Should Throw "does not belong to the set"
-            $attributes = 'ReadOnly','Hidden','System','Archive' #Other then Normal these are the only Attributes supported by Set-ItemProperty
             Foreach($attrib in $attributes){
                 {Set-FileAttributes -Attribute $attrib -Path $VaildPath} | Should Not Throw
             }
@@ -28,12 +34,6 @@ Describe "Set-FileAttributes Function Tests" {
         }
     }
     Context "Pipeline Tests" {
-        $VaildPath1 = "TestDrive:\test\test1.txt"
-        $VaildPath2 = "TestDrive:\test\test2.txt"
-        $InVaildPath = "TestDrive:\DoesNotExist.txt"
-        new-item -path "TestDrive:\test" -ItemType directory
-        New-Item -Path $VaildPath1
-        New-Item -Path $VaildPath2
         It "Verify -Path Parameter from Pipeline" {
             {$InVaildPath|Set-FileAttributes -Attribute Invalid} | Should Throw
             {$VaildPath1|Set-FileAttributes -Attribute Readonly} | Should Not Throw
@@ -45,7 +45,6 @@ Describe "Set-FileAttributes Function Tests" {
         }
     }
     Context "Modify Attributes" {
-        $attributes = 'ReadOnly','Hidden','System','Archive' #Other then Normal these are the only Attributes supported by Set-ItemProperty
         It "Can change the attributes"{
             Foreach($attrib in $Attributes){
                 Write-Host "Starting Attributes - $((Get-ItemProperty -Path $VaildPath).attributes)"
