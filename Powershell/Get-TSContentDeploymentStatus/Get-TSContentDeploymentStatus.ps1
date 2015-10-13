@@ -1,6 +1,6 @@
 ﻿<#
 .Synopsis
-   Get the status of packages referanced in a Config Manager Task Sequence on a Distribution Point
+   Get the status of packages used in a Config Manager Task Sequence on a specified Distribution Point(s)
 .EXAMPLE
     Get-TSContentDeploymentStatus -SiteSystemServerName DEVSCCMDP1.my.domain.com -SiteCode DEV -TaskSequencePackageId DEV001A2
 .EXAMPLE
