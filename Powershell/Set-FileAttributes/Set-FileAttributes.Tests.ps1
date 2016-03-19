@@ -8,7 +8,6 @@ Describe "Set-FileAttributes Function Tests" {
     New-Item -Path $VaildPath
     $VaildPath1 = "TestDrive:\test\test1.txt"
     $VaildPath2 = "TestDrive:\test\test2.txt"
-    $InVaildPath = "TestDrive:\DoesNotExist.txt"
     new-item -path "TestDrive:\test" -ItemType directory
     New-Item -Path $VaildPath1
     New-Item -Path $VaildPath2
