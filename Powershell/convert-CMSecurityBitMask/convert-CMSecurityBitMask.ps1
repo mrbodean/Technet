@@ -95,6 +95,40 @@ function convert-CMSecurityBitMask
         203 = "Virtual Environment"
         204 = "Condition Access Management"
         }
+       
+
+        $RBAC_ALLOperations = @{
+            0x01 = 'Read'
+            0x02 = 'Modify'
+            0x04 = 'Delete'
+            0x08 = 'Copy to Distribution Point'
+            0x16 = 'Set Security Scope'
+            0x32 = 'Remote Control'
+            0x64 = 'Not Used'
+            0x128 = 'Modify Resource'
+            0x256 = 'Not Used'
+            0x512 = 'Delete Resource'
+            0x1024 = 'Create','Admin.Add'
+            0x2048 = 'View Collected File','Application.Approve'
+            0x4096 = 'Read Resource'
+            0x8192 = 'Manage Folder Item'
+            0x16384 = 'Meter Site','Collection.Deploy Packages'
+            0x32768 = 'Not Used'
+            0x65536 = 'Manage Status Filters','Collection.Deploy Client Settings'
+            0x131072 = 'Manage Folder'
+            0x262144 = 'ConfigurationItem.Network Access','Site.Modify CH Settings','Collection.EnforceSecurity','SMS_AntimalwareSettings.ReadDefault'
+            0x524288 = 'Site.Import Machine','Collection.Deploy Antimalware Settings'
+            0x1048576 = 'SequencePackage.Create Task Sequence Media','SMS_DistributionPointGroup.Associate','SMS_BoundaryGroup.AssociateSiteSystem','SMS_SettingsDefinition.ModifyPolicy','Collection.Deploy Applications'
+            0x2097152 = 'Collection.Modify Collection Settings','Site.ModifyConnectorPolicy','SMS_AntimalwareSettings.ModifyDefault'
+            0x4194304 = 'Site.Manage OSD Certificate','MigrationJob.Manage','MigrationSiteMapping.SpecifySourceHierarchy','Collection.Deploy Configuration Items'
+            0x8388608 = 'StateMigration.Recover User State','Collection.Deploy Task Sequences'
+            0x16777216 = 'Collection.Manage BMC'
+            0x33554432 = 'Collection.View BMC'
+            0x67108864 = 'AISoftwareList.Manage AI','Collection.Deploy Software Updates'
+            0x134217728 = 'AISoftwareList.View AI','Collection.Deploy Firewall Policies'
+            0x268435456 = 'RunReport'
+            0x536870912 = 'ModifyReport'
+        }
 
         $RBAC_CollectionOperations = @{
            0x01 = "Read"
@@ -599,5 +633,62 @@ function convert-CMSecurityBitMask
     }
     End
     {
+    }
+}
+
+ $status = @{0x01 = "Offline" ; 0x02 = "Paper Tray Empty" ; 0x04 = "Toner Exhausted" ; 0x08 = "Paper Jam" }
+ $value = 3
+ $status.Keys | where { $_ -band $value } | foreach { $status.Get_Item($_) }
+ $value = 1
+$RBAC_ALLOperations = @{
+            0x01 = 'Read'
+            0x02 = 'Modify'
+            0x04 = 'Delete'
+            0x08 = 'Copy to Distribution Point'
+            0x16 = 'Set Security Scope'
+            0x32 = 'Remote Control'
+            0x64 = $null #'Not Used'
+            0x128 = 'Modify Resource'
+            0x256 = $null #'Not Used'
+            0x512 = 'Delete Resource'
+            0x1024 = 'Create','Add'
+            0x2048 = 'View Collected File','Application.Approve'
+            0x4096 = 'Read Resource'
+            0x8192 = 'Manage Folder Item'
+            0x16384 = 'Meter Site','Collection.Deploy Packages'
+            0x32768 = $null #'Not Used'
+            0x65536 = 'Manage Status Filters','Collection.Deploy Client Settings'
+            0x131072 = 'Manage Folder'
+            0x262144 = 'ConfigurationItem.Network Access','Site.Modify CH Settings','Collection.EnforceSecurity','SMS_AntimalwareSettings.ReadDefault'
+            0x524288 = 'Site.Import Machine','Collection.Deploy Antimalware Settings'
+            0x1048576 = 'SequencePackage.Create Task Sequence Media','SMS_DistributionPointGroup.Associate','SMS_BoundaryGroup.AssociateSiteSystem','SMS_SettingsDefinition.ModifyPolicy','Collection.Deploy Applications'
+            0x2097152 = 'Collection.Modify Collection Settings','Site.ModifyConnectorPolicy','SMS_AntimalwareSettings.ModifyDefault'
+            0x4194304 = 'Site.Manage OSD Certificate','MigrationJob.Manage','MigrationSiteMapping.SpecifySourceHierarchy','Collection.Deploy Configuration Items'
+            0x8388608 = 'StateMigration.Recover User State','Collection.Deploy Task Sequences'
+            0x16777216 = 'Collection.Manage BMC'
+            0x33554432 = 'Collection.View BMC'
+            0x67108864 = 'AISoftwareList.Manage AI','Collection.Deploy Software Updates'
+            0x134217728 = 'AISoftwareList.View AI','Collection.Deploy Firewall Policies'
+            0x268435456 = 'RunReport'
+            0x536870912 = 'ModifyReport'
+        }
+$RBAC_ALLOperations.Keys | where { $_ -band $value } | foreach { $RBAC_ALLOperations.Get_Item($_) }
+function Get-ErrorDescription {
+
+    param([int]$ErrorBits)
+
+    $ErrorTable = @{
+        0x01 = "Read"
+        0x02 = "Modify"
+        0x04 = "Error3"
+        0x08 = "Error4"
+        0x10 = "Error5"
+        0x20 = "Error6"
+    }
+
+    foreach($ErrorCode in $ErrorTable.Keys | Sort-Object){
+        if(($ErrorBits -band $ErrorCode) -eq $ErrorCode){
+            $ErrorTable[$ErrorCode]
+        }
     }
 }
