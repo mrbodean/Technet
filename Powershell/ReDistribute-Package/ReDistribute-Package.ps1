@@ -1,20 +1,21 @@
-﻿<#PSScriptInfo
+﻿
+<#PSScriptInfo
 
-.VERSION 1.0
+.VERSION 1.0.0
 
-.GUID 54378622-92ba-45d0-92c7-b3d0c86f2ea8
+.GUID 6ea91253-7c75-403c-8bc9-f627451aad7e
 
-.AUTHOR Jonathan Warnken - @MrBoDean
+.AUTHOR Jonathan Warnken - @MrBodean - http://mrbodean.azurewebsites.net/
 
 .COMPANYNAME 
 
-.COPYRIGHT Jonathan Warnken
+.COPYRIGHT (C) Jonathan Warnken. All rights reserved.
 
 .TAGS SCCM
 
 .LICENSEURI https://github.com/mrbodean/Technet/blob/master/Powershell/ReDistribute-Package/License
 
-.PROJECTURI https://github.com/mrbodean/Technet/tree/master/Powershell/ReDistribute-Package
+.PROJECTURI https://github.com/mrbodean/Technet/blob/master/Powershell/ReDistribute-Package
 
 .ICONURI 
 
@@ -25,14 +26,43 @@
 .EXTERNALSCRIPTDEPENDENCIES 
 
 .RELEASENOTES
-    Initial Release 
+Initial Release
 
 #>
-<#
+
+<# 
 .Synopsis
    Redistrubute a Configuration Manager package to a distribution point
 .DESCRIPTION 
-    Script to ReDistribute Configuration Manager Package by Package Id to Targeted Distribution Points 
+ Script to ReDistribute Configuration Manager Package by Package Id to Targeted Distribution Points 
+.EXAMPLE
+   ReDistribute-Package -SiteCode LAB -SiteServer LabServer -PkgID LAB00005 -DP LabDP1.lab.int
+.EXAMPLE
+   "LabDP1.lab.int","LabDP2.lab.int"|ReDistribute-Package -SiteCode LAB -SiteServer LabServer -PkgID LAB00005
+#> 
+Param(
+    # Configuration Manager Site Code
+    [Parameter(Mandatory=$true,
+               ValueFromPipelineByPropertyName=$true)]
+    [string]$SiteCode,
+    # Configuration Manager Site Server
+    [Parameter(Mandatory=$true,
+               ValueFromPipelineByPropertyName=$true)]
+    [string]$SiteServer,
+    # Configuration Manager PackageID
+    [Parameter(Mandatory=$true,
+               ValueFromPipelineByPropertyName=$true)]
+    [string]$PkgID,
+    # Configuration Manager Distribution Point
+    [Parameter(Mandatory=$true,
+               ValueFromPipeline=$true,
+               ValueFromPipelineByPropertyName=$true)]
+    [string[]]$DP
+)
+
+<#
+.Synopsis
+   Redistrubute a Configuration Manager package to a distribution point
 .EXAMPLE
    ReDistribute-Package -SiteCode LAB -SiteServer LabServer -PkgID LAB00005 -DP LabDP1.lab.int
 .EXAMPLE
@@ -85,3 +115,4 @@ function ReDistribute-Package
 
     }# Process
 }# Function
+ReDistribute-Package @PSBOundParameters
