@@ -1,6 +1,38 @@
-﻿<#
+﻿<#PSScriptInfo
+
+.VERSION 1.0
+
+.GUID 54378622-92ba-45d0-92c7-b3d0c86f2ea8
+
+.AUTHOR Jonathan Warnken - @MrBoDean
+
+.COMPANYNAME 
+
+.COPYRIGHT Jonathan Warnken
+
+.TAGS SCCM
+
+.LICENSEURI https://github.com/mrbodean/Technet/blob/master/Powershell/ReDistribute-Package/License
+
+.PROJECTURI https://github.com/mrbodean/Technet/tree/master/Powershell/ReDistribute-Package
+
+.ICONURI 
+
+.EXTERNALMODULEDEPENDENCIES 
+
+.REQUIREDSCRIPTS 
+
+.EXTERNALSCRIPTDEPENDENCIES 
+
+.RELEASENOTES
+    Initial Release 
+
+#>
+<#
 .Synopsis
    Redistrubute a Configuration Manager package to a distribution point
+.DESCRIPTION 
+    Script to ReDistribute Configuration Manager Package by Package Id to Targeted Distribution Points 
 .EXAMPLE
    ReDistribute-Package -SiteCode LAB -SiteServer LabServer -PkgID LAB00005 -DP LabDP1.lab.int
 .EXAMPLE
