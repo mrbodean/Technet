@@ -13,9 +13,9 @@
 
 .TAGS SCCM
 
-.LICENSEURI 
+.LICENSEURI https://github.com/mrbodean/Technet/blob/master/Powershell/ReDistribute-FailedPackages/License
 
-.PROJECTURI 
+.PROJECTURI https://github.com/mrbodean/Technet/tree/master/Powershell/ReDistribute-FailedPackages
 
 .ICONURI 
 
