@@ -113,5 +113,5 @@ function ReDistribute-FailedPackages
         }#If Else
     }# Process
 }# Function
-ReDistribute-Package @PSBOundParameters
+ReDistribute-FailedPackages @PSBOundParameters
 
