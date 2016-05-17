@@ -12,6 +12,36 @@
    }
    Set-CMClientLogLevel @parms
 #>
+param(
+    # Level of Logging to set 
+    [Parameter(Mandatory=$true,
+                ValueFromPipelineByPropertyName=$true)]
+    [ValidateSet("Debug","Normal","Off")]
+    [string]$LogLevel,
+    # Computer name(s) to set the logging on 
+    [Parameter(Mandatory=$true,
+                ValueFromPipelineByPropertyName=$true)]
+    [String[]]$Computername,
+    [Parameter(ValueFromPipelineByPropertyName=$true)]
+    [int]$LogMaxHistory,
+    [Parameter(ValueFromPipelineByPropertyName=$true)]
+    [int]$LogMaxSize
+)
+
+<#
+.Synopsis
+   Set the Log Level for the Configuration Manager Client 
+.EXAMPLE
+   Set-CMClientLogLevel -LogLevel Normal -Computername SomeComputer1
+.EXAMPLE
+   $parms @{
+    LogLevel = "Debug"
+    LogMaxHistory = 3
+    LogMaxSize = 500000
+    ComputerName = "SomeComputer1", "SomeComputer2","SomeComputer3"
+   }
+   Set-CMClientLogLevel @parms
+#>
 function Set-CMClientLogOptions
 {
     [CmdletBinding()]
@@ -89,3 +119,4 @@ function Set-CMClientLogOptions
         }
     }
 }
+Set-CMClientLogOptions @PSBoundParameters
