@@ -97,8 +97,8 @@ function Set-CMClientLogOptions
                     $update = $true
                 }
             }
-            if($maxhistoryvalue -ne $null){
-                if($CurrentmaxhistValue -eq $maxhistoryvalue){
+            if($CurrentmaxsizeValue -ne $null){
+                if($CurrentmaxhistValue -eq $CurrentmaxsizeValue){
                      Write-Output "Current Log Max matched requested value. No action taken."
                 }else{
                     Set-ItemProperty -Path $regpath -name $maxsizename -value $maxsizevalue
