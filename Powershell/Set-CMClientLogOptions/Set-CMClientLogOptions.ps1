@@ -22,8 +22,10 @@ param(
     [Parameter(Mandatory=$true,
                 ValueFromPipelineByPropertyName=$true)]
     [String[]]$Computername,
+    # Number of log files to keep
     [Parameter(ValueFromPipelineByPropertyName=$true)]
     [int]$LogMaxHistory,
+    # Max size of log file
     [Parameter(ValueFromPipelineByPropertyName=$true)]
     [int]$LogMaxSize
 )
@@ -48,7 +50,7 @@ function Set-CMClientLogOptions
     [OutputType([string])]
     Param
     (
-        # Level of Logging to set 
+        # Level of Logging to set. Must be Debug, Normal, or Off
         [Parameter(Mandatory=$true,
                    ValueFromPipelineByPropertyName=$true)]
         [ValidateSet("Debug","Normal","Off")]
@@ -57,8 +59,10 @@ function Set-CMClientLogOptions
         [Parameter(Mandatory=$true,
                    ValueFromPipelineByPropertyName=$true)]
         [String[]]$Computername,
+        # Number of log files to keep
         [Parameter(ValueFromPipelineByPropertyName=$true)]
         [int]$LogMaxHistory,
+        # Max size of log file
         [Parameter(ValueFromPipelineByPropertyName=$true)]
         [int]$LogMaxSize
     )
