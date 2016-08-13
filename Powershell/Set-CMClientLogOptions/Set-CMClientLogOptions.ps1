@@ -11,6 +11,11 @@
     ComputerName = "SomeComputer1", "SomeComputer2","SomeComputer3"
    }
    Set-CMClientLogLevel @parms
+.NOTES
+    Author
+        Jon Warnken
+        @MrBoDean
+        jon.warnken@gmail.com
 #>
 param(
     # Level of Logging to set 
@@ -77,7 +82,12 @@ function Set-CMClientLogOptions
             $loglevelvalue = $args[0]
             $maxhistoryvalue = $args[1]
             $maxsizevalue = $args[2]
-            $regpath = "Registry::HKLM\SOFTWARE\Microsoft\CCM\Logging\@GLOBAL"
+            $architecture = (Get-WmiObject win32_OperatingSystem).OSArchitecture
+            If($architecture -eq "64-bit"){
+                $regpath = "Registry::HKLM\SOFTWARE\Wow6432Node\Microsoft\CCM\Logging\@GLOBAL"
+            }else{
+                $regpath = "Registry::HKLM\SOFTWARE\Microsoft\CCM\Logging\@GLOBAL"
+            }
             $loglevelname = "LogLevel"
             $maxhistname = "LogMaxHistory"
             $maxsizename = "LogMaxSize"
@@ -91,6 +101,58 @@ function Set-CMClientLogOptions
                 Set-ItemProperty -Path $regpath -name $loglevelname -value $loglevelvalue
                 Write-Output "Successfully set the Log Level"
                 $update = $true
+            }
+            Switch($LogLevel){
+                "0"{#Debug logging enabled
+                    if(Get-Item "$regpath\DebugLogging" -ErrorAction SilentlyContinue){                  
+                        Write-Output "DebugLogging Key found"
+                        $CurrentDebugLogging = Get-ItemPropertyValue -Path "$regpath\DebugLogging" -Name "Enabled" -ErrorAction SilentlyContinue
+                        If($CurrentDebugLogging){
+                            Switch($CurrentDebugLogging){
+                                "True"{Write-Output "Current DebugLogging Setting is True. No action taken."}
+                                "False"{
+                                    Set-ItemProperty -Path "$regpath\DebugLogging" -Name "Enabled" -Value "True"
+                                    Write-Output "Set DebugLogging Enabled to True."
+                                    $update = $true
+                                }
+                            }
+                        }else{
+                            Write-Output "Enable Key Not found. Creating and Setting to True."
+                            Set-ItemProperty -Path "$regpath\DebugLogging" -Name "Enabled" -Value "True"
+                            Write-Output "Set DebugLogging Enabled to True."
+                            $update = $true
+                        }
+                    }else{
+                        Write-Output "DebugLogging Key Not found"
+                        New-Item -Path "$regpath\DebugLogging"
+                        Set-ItemProperty -Path "$regpath\DebugLogging" -Name "Enabled" -Value "True"
+                        Write-Output "Set DebugLogging Enabled to True."
+                        $update = $true
+                    }
+                }
+                default{#Debug logging is NOT enabled
+                     if(Get-Item "$regpath\DebugLogging" -ErrorAction SilentlyContinue){                  
+                        Write-Output "DebugLogging Key found"
+                        $CurrentDebugLogging = Get-ItemPropertyValue -Path "$regpath\DebugLogging" -Name "Enabled" -ErrorAction SilentlyContinue
+                        If($CurrentDebugLogging){
+                            Switch($CurrentDebugLogging){
+                                "True"{
+                                    Write-Output "Current DebugLogging Setting is True and DebugLogging is not set."
+                                    Set-ItemProperty -Path "$regpath\DebugLogging" -Name "Enabled" -Value "False"
+                                    Write-Output "Set DebugLogging Enabled to False."
+                                    $update = $true
+                                }
+                                "False"{
+                                    Write-Output "Current DebugLogging Setting is False. No action taken."
+                                }
+                            }
+                        }else{
+                            Write-Output "Enable Key Not found. No action taken."
+                        }
+                    }else{
+                        Write-Output "DebugLogging Key Not found. No action taken."
+                    }
+                }
             }
             if($maxhistoryvalue -ne $null){
                 if($CurrentmaxhistValue -eq $maxhistoryvalue){
