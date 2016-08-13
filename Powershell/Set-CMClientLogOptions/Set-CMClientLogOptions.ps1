@@ -82,12 +82,7 @@ function Set-CMClientLogOptions
             $loglevelvalue = $args[0]
             $maxhistoryvalue = $args[1]
             $maxsizevalue = $args[2]
-            $architecture = (Get-WmiObject win32_OperatingSystem).OSArchitecture
-            If($architecture -eq "64-bit"){
-                $regpath = "Registry::HKLM\SOFTWARE\Wow6432Node\Microsoft\CCM\Logging\@GLOBAL"
-            }else{
-                $regpath = "Registry::HKLM\SOFTWARE\Microsoft\CCM\Logging\@GLOBAL"
-            }
+            $regpath = "Registry::HKLM\SOFTWARE\Microsoft\CCM\Logging\@GLOBAL"
             $loglevelname = "LogLevel"
             $maxhistname = "LogMaxHistory"
             $maxsizename = "LogMaxSize"
