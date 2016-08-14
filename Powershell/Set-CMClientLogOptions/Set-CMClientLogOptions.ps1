@@ -19,8 +19,7 @@
 #>
 param(
     # Level of Logging to set 
-    [Parameter(Mandatory=$true,
-                ValueFromPipelineByPropertyName=$true)]
+    [Parameter(ValueFromPipelineByPropertyName=$true)]
     [ValidateSet("Debug","Normal","Off")]
     [string]$LogLevel,
     # Computer name(s) to set the logging on 
@@ -83,6 +82,7 @@ function Set-CMClientLogOptions
             $maxhistoryvalue = $args[1]
             $maxsizevalue = $args[2]
             $regpath = "Registry::HKLM\SOFTWARE\Microsoft\CCM\Logging\@GLOBAL"
+            $DebugLoggingPath = "Registry::HKLM\SOFTWARE\Microsoft\CCM\Logging\DebugLogging"
             $loglevelname = "LogLevel"
             $maxhistname = "LogMaxHistory"
             $maxsizename = "LogMaxSize"
@@ -90,66 +90,32 @@ function Set-CMClientLogOptions
             $CurentloglevelValue = Get-ItemPropertyValue -Path $regpath -Name $loglevelname
             $CurrentmaxhistValue = Get-ItemPropertyValue -Path $regpath -Name $maxhistname
             $CurrentmaxsizeValue = Get-ItemPropertyValue -Path $regpath -Name $maxsizename
-            if($CurentloglevelValue -eq $loglevelvalue){
-                Write-Output "Current Log Level matched requested value. No action taken."
-            }else{
-                Set-ItemProperty -Path $regpath -name $loglevelname -value $loglevelvalue
-                Write-Output "Successfully set the Log Level"
-                $update = $true
-            }
-            Switch($LogLevel){
-                "0"{#Debug logging enabled
-                    if(Get-Item "$regpath\DebugLogging" -ErrorAction SilentlyContinue){                  
-                        Write-Output "DebugLogging Key found"
-                        $CurrentDebugLogging = Get-ItemPropertyValue -Path "$regpath\DebugLogging" -Name "Enabled" -ErrorAction SilentlyContinue
-                        If($CurrentDebugLogging){
-                            Switch($CurrentDebugLogging){
-                                "True"{Write-Output "Current DebugLogging Setting is True. No action taken."}
-                                "False"{
-                                    Set-ItemProperty -Path "$regpath\DebugLogging" -Name "Enabled" -Value "True"
-                                    Write-Output "Set DebugLogging Enabled to True."
-                                    $update = $true
-                                }
-                            }
+            If(loglevelvalue){
+                if($CurentloglevelValue -eq $loglevelvalue){
+                    Write-Output "Current Log Level matched requested value. No action taken."
+                }else{
+                    Set-ItemProperty -Path $regpath -name $loglevelname -value $loglevelvalue
+                    Write-Output "Successfully set the Log Level"
+                    $update = $true
+                }
+                Switch($loglevelvalue){
+                    0{
+                        if(Get-Item $DebugLoggingPath -ErrorAction SilentlyContinue){
+                            Write-Output "DebugLogging Key found. No action taken."
                         }else{
-                            Write-Output "Enable Key Not found. Creating and Setting to True."
-                            Set-ItemProperty -Path "$regpath\DebugLogging" -Name "Enabled" -Value "True"
-                            Write-Output "Set DebugLogging Enabled to True."
-                            $update = $true
+                            New-Item -Path $DebugLoggingPath
                         }
-                    }else{
-                        Write-Output "DebugLogging Key Not found"
-                        New-Item -Path "$regpath\DebugLogging"
-                        Set-ItemProperty -Path "$regpath\DebugLogging" -Name "Enabled" -Value "True"
-                        Write-Output "Set DebugLogging Enabled to True."
-                        $update = $true
+                    }
+                    Default{
+                        if(Get-Item $DebugLoggingPath -ErrorAction SilentlyContinue){
+                            Remove-Item -Path $DebugLoggingPath -Force 
+                        }else{
+                            Write-Output "DebugLogging Key Not found. No action taken."
+                        }
                     }
                 }
-                default{#Debug logging is NOT enabled
-                     if(Get-Item "$regpath\DebugLogging" -ErrorAction SilentlyContinue){                  
-                        Write-Output "DebugLogging Key found"
-                        $CurrentDebugLogging = Get-ItemPropertyValue -Path "$regpath\DebugLogging" -Name "Enabled" -ErrorAction SilentlyContinue
-                        If($CurrentDebugLogging){
-                            Switch($CurrentDebugLogging){
-                                "True"{
-                                    Write-Output "Current DebugLogging Setting is True and DebugLogging is not set."
-                                    Set-ItemProperty -Path "$regpath\DebugLogging" -Name "Enabled" -Value "False"
-                                    Write-Output "Set DebugLogging Enabled to False."
-                                    $update = $true
-                                }
-                                "False"{
-                                    Write-Output "Current DebugLogging Setting is False. No action taken."
-                                }
-                            }
-                        }else{
-                            Write-Output "Enable Key Not found. No action taken."
-                        }
-                    }else{
-                        Write-Output "DebugLogging Key Not found. No action taken."
-                    }
-                }
-            }
-            if($maxhistoryvalue -ne $null){
+            }          
+            if($maxhistoryvalue){
                 if($CurrentmaxhistValue -eq $maxhistoryvalue){
                      Write-Output "Current Log Max matched requested value. No action taken."
                 }else{
@@ -158,8 +124,8 @@ function Set-CMClientLogOptions
                     $update = $true
                 }
             }
-            if($CurrentmaxsizeValue -ne $null){
-                if($CurrentmaxhistValue -eq $CurrentmaxsizeValue){
+            if($maxsizevalue){
+                if($CurrentmaxsizeValue -eq $maxsizevalue){
                      Write-Output "Current Log Max matched requested value. No action taken."
                 }else{
                     Set-ItemProperty -Path $regpath -name $maxsizename -value $maxsizevalue
