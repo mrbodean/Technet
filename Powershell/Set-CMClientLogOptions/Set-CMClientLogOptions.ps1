@@ -1,3 +1,34 @@
+<#PSScriptInfo
+
+.VERSION 1.0.0
+
+.GUID 56dfd8ea-5998-4524-9264-edfa65b4cc96
+
+.AUTHOR Jonathan Warnken - @MrBodean - http://www.mrbodean.net/
+
+.COMPANYNAME 
+
+.COPYRIGHT (C) Jonathan Warnken 2017 All rights reserved.
+
+.TAGS SCCM, ConfigMan, Configuration Manager, Client 
+
+.LICENSEURI https://github.com/mrbodean/Technet/blob/master/Powershell/Set-CMClientLogOptions/License
+
+.PROJECTURI https://github.com/mrbodean/Technet/tree/master/Powershell/Set-CMClientLogOptions
+
+.ICONURI 
+
+.EXTERNALMODULEDEPENDENCIES 
+
+.REQUIREDSCRIPTS 
+
+.EXTERNALSCRIPTDEPENDENCIES 
+
+.RELEASENOTES
+Initial Release
+
+#>
+
 <#
 .Synopsis
    Set the Log Level for the Configuration Manager Client 
