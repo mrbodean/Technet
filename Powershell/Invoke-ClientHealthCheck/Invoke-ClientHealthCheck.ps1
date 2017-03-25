@@ -12,7 +12,7 @@ $ClientHealthCheck = {
     }
     Function Reset-UpdateStore {
         Write-Verbose "Check StateMessage.log if State Messages are successfully forwarded to Management Point"
-        $StateMessage = cat ("c:\Windows\CCM\Logs\StateMessage.log")
+        $StateMessage = get-content ("c:\Windows\CCM\Logs\StateMessage.log")
         if ($StateMessage -match "Successfully forwarded State Messages to the MP") {
             Write-Output "$($env:ComputerName) StateMessage: OK" 
         }
@@ -22,9 +22,9 @@ $ClientHealthCheck = {
             $SCCMUpdatesStore.RefreshServerComplianceState()
         }
     }
-    Function RegistryPol {
+    Function Test-RegistryPol {
         Write-Verbose "Check WUAHandler.log if registry.pol need to be deleted"
-        $WUAHandler = cat ("c:\Windows\CCM\Logs\WUAHandler.log")
+        $WUAHandler = get-content ("c:\Windows\CCM\Logs\WUAHandler.log")
         if ($WUAHandler -contains "0x80004005") {
 
             Write-Output "$($env:ComputerName) GPO Cache: Error. Deleting registry.pol..."
@@ -34,7 +34,7 @@ $ClientHealthCheck = {
             Write-Output "$($env:ComputerName) GPO Cache: OK"
         }
     }
-    Function Validate-CMWMI {
+    Function Test-CMWMI {
         
         Try {
             $WMI = Get-WmiObject -Namespace root/ccm -Class SMS_Client -ErrorAction Stop
@@ -51,7 +51,7 @@ $ClientHealthCheck = {
             }
         }
     }
-    Function Reinstall-Client {
+    Function Repair-Client {
         If(Test-path c:\windows\ccm\ccmrepair.exe){
             Write-Output "$($env:ComputerName) Repairing Configuration Manager Client..."
             Invoke-Expression "c:\windows\ccm\ccmrepair.exe "
@@ -70,6 +70,6 @@ $ClientHealthCheck = {
 
     Reset-ProvisioningMode
     Reset-UpdateStore
-    RegistryPol
-    Validate-CMWMI
+    Test-RegistryPol
+    Test-CMWMI
 }
