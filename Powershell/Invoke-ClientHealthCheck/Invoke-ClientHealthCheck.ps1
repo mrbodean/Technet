@@ -51,22 +51,25 @@ $ClientHealthCheck = {
             }
         }
     }
-    Function Repair-Client {
-        If(Test-path c:\windows\ccm\ccmrepair.exe){
-            Write-Output "$($env:ComputerName) Repairing Configuration Manager Client..."
-            Invoke-Expression "c:\windows\ccm\ccmrepair.exe "
-        }else{
-            If(Test-path c:\windows\ccmsetup\ccmsetup.exe){
-                Write-Output "$($env:ComputerName) Reinstalling Configuration Manager Client..."
-                Invoke-Expression "c:\windows\ccmsetup\ccmsetup.exe /bitspriority:low /skipprereq:silverlight.exe"
-            }
-            else{
-                Write-Output "$($env:ComputerName) No local Client install files! "
-            }
-        }
-
-        
-    }
+ # Commented out the Repair-Client function as this is for ad hoc client checks and manual inspection and client install is expeceted as part of the workflow.
+ # Leaving the code as a sample for those who may use this as a fully automated process. 
+ # !!! Please note that invoking this script against a remote client and using the Repair-Client function may cause issues due to 
+ # the double hop limitations. !!!
+ #
+ #   Function Repair-Client {
+ #       If(Test-path c:\windows\ccm\ccmrepair.exe){
+ #           Write-Output "$($env:ComputerName) Repairing Configuration Manager Client..."
+ #           Invoke-Expression "c:\windows\ccm\ccmrepair.exe "
+ #       }else{
+ #           If(Test-path c:\windows\ccmsetup\ccmsetup.exe){
+ #               Write-Output "$($env:ComputerName) Reinstalling Configuration Manager Client..."
+ #               Invoke-Expression "c:\windows\ccmsetup\ccmsetup.exe /bitspriority:low /skipprereq:silverlight.exe"
+ #           }
+ #           else{
+ #               Write-Output "$($env:ComputerName) No local Client install files! "
+ #           }
+ #       }
+ #   }
 
     Reset-ProvisioningMode
     Reset-UpdateStore
