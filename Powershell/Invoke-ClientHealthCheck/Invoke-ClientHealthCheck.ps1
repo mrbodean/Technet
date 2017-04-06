@@ -6,6 +6,8 @@ $ClientHealthCheck = {
             Write-Output "$($env:ComputerName) is in Provisioning Mode! Remediating..."
             Set-itemProperty -path $regpath -Name ProvisioningMode -Value "false"
             Invoke-wmiMethod -namespace root\CCM -class SMS_Client -Name SetClientProvisioningMode -ArgumentList $false
+            $Global:continue = $false
+            Write-Output "$($env:ComputerName) was in Provisioning Mode. Remediation was attempted, please give the system 15-20 minutes and recheck. No other Remediations will be attempted."
         }else{
             Write-Output "$($env:ComputerName) Provisioning Mode: OK"
         }
@@ -20,6 +22,8 @@ $ClientHealthCheck = {
             Write-Output "$($env:ComputerName) StateMessage: ERROR. Remediating..."
             $SCCMUpdatesStore = New-Object -ComObject Microsoft.CCM.UpdatesStore
             $SCCMUpdatesStore.RefreshServerComplianceState()
+            $Global:continue = $false
+            Write-Output "$($env:ComputerName) was Not successfully forwarding State Messages to a Management Point. Remediation was attempted, please give the system 15-20 minutes and recheck. No other Remediations will be attempted."
         }
     }
     Function Test-RegistryPol {
@@ -29,6 +33,8 @@ $ClientHealthCheck = {
 
             Write-Output "$($env:ComputerName) GPO Cache: Error. Deleting registry.pol..."
             Remove-Item C:\Windows\System32\registry.pol -Force
+            $Global:continue = $false
+            Write-Output "$($env:ComputerName) had GPO Cache errors. Remediation was attempted, please give the system 15-20 minutes and recheck. No other Remediations will be attempted."
         }
         else {
             Write-Output "$($env:ComputerName) GPO Cache: OK"
@@ -44,10 +50,12 @@ $ClientHealthCheck = {
             $ClientReinstall = $true
             $WMIStatus = winmgmt /verifyrepository 
             If($WMIStatus -eq "WMI repository is consistent"){
-                Write-Output "$($env:ComputerName) WMI for Config Manger Client: ERROR!! WMI is missing Client namespace. Reinstall Client!"
+                $Global:continue = $false
+                Write-Output "$($env:ComputerName) WMI for Config Manger Client: ERROR!! WMI is missing Client namespace. Reinstall Client! No other Remediations will be attempted."            
             }else{
+                $Global:continue = $false
                 $WMIStatus
-                Write-Output "$($env:ComputerName) WMI for Config Manger Client: ERROR!! Repair WMI and reinstall ConfigMgr client."
+                Write-Output "$($env:ComputerName) WMI for Config Manger Client: ERROR!! Repair WMI and reinstall ConfigMgr client. No other Remediations will be attempted."
             }
         }
     }
@@ -70,9 +78,9 @@ $ClientHealthCheck = {
  #           }
  #       }
  #   }
-
-    Reset-ProvisioningMode
-    Reset-UpdateStore
-    Test-RegistryPol
-    Test-CMWMI
+    $Global:continue = $true
+    If($continue){Test-CMWMI}    
+    If($continue){Reset-ProvisioningMode}
+    If($continue){Reset-UpdateStore}
+    If($continue){Test-RegistryPol}
 }
