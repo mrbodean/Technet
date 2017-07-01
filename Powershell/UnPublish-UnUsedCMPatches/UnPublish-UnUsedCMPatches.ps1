@@ -8,7 +8,7 @@
     Unpublish-UnUsedCMPatches -SiteCode LAB -SCCMServer LabServer -WSUSServer LabWSUS
         This will report on the patches that would be declined
 .EXAMPLE
-    Unpublish-UnUsedCMPatches -SiteCode LAB -SCCMServer LabServer -WSUSServer LabWSUS -SkipDecline $False
+    Unpublish-UnUsedCMPatches -SiteCode LAB -SCCMServer LabServer -WSUSServer LabWSUS -Decline
         This will report on the patches that would be declined
 .NOTES
     Author Jon Warnken
@@ -36,9 +36,9 @@ Param(
         [Parameter(Mandatory=$true,
                    ValueFromPipelineByPropertyName=$true)]
         [string]$SiteCode,
-        # Skip the decline step. Defaults to $True for safety
+        # Decline Updates. Defaults to False for safety
         [Parameter()]
-        [bool]$skipdecline = $True
+        [switch]$Decline
     )
 Function Unpublish-UnUsedCMPatches{
     [CmdletBinding()]
@@ -61,13 +61,14 @@ Function Unpublish-UnUsedCMPatches{
         [Parameter(Mandatory=$true,
                    ValueFromPipelineByPropertyName=$true)]
         [string]$SiteCode,
-        # Skip the decline step. Defaults to $True for safety
+        # Decline Updates. Defaults to False for safety
         [Parameter()]
-        [bool]$skipdecline = $True
+        [switch]$Decline
     )
     $outPath = Split-Path $script:MyInvocation.MyCommand.Path
     $outDeclineList = Join-Path $outPath "DeclinedUpdates.csv"
     $outDeclineListBackup = Join-Path $outPath "DeclinedUpdatesBackup.csv"
+    if(Test-Path -Path $outDeclineList){Copy-Item -Path $outDeclineList -Destination $outDeclineListBackup -Force}
     "UpdateID, RevisionNumber, Title, KBArticle, SecurityBulletin, LastLevel" | Out-File $outDeclineList
     $cmpatchlist = Get-WmiObject -Namespace "root\SMS\site_$SiteCode" -class SMS_SoftwareUpdate -ComputerName $SCCMServer|Select-Object LocalizedDisplayName, CI_UniqueID, IsDeployed, NumMissing
     $cmpatchlistcount = $cmpatchlist.Count
@@ -82,37 +83,34 @@ Function Unpublish-UnUsedCMPatches{
     #Connect to the WSUS 3.0 interface.
     [reflection.assembly]::LoadWithPartialName("Microsoft.UpdateServices.Administration") | out-null
     If($? -eq $False)
-    {       Write-Warning "Something went wrong connecting to the WSUS interface on $WsusServer server: $($Error[0].Exception.Message)"
-            $ErrorActionPreference = $script:CurrentErrorActionPreference
-            Return
+    {       Write-Warning "Something went wrong connecting to the WSUS interface on $WsusServer server: $($Error[0].Exception.Message)"
+            $ErrorActionPreference = $script:CurrentErrorActionPreference
+            Return
     }
     $WsusServerAdminProxy = [Microsoft.UpdateServices.Administration.AdminProxy]::GetUpdateServer($WsusServer,$UseSSL,$PortNumber);
     if($i){Remove-Variable i}
     If($updatesDeclined){Remove-Variable updatesDeclined}
     $updatesDeclined =0
     Foreach($item in $cmpatchlist){
-        Remove-Variable patch -ErrorAction silentlycontinue
-        $i++
-        $percentComplete = "{0:N2}" -f (($i/$cmpatchlistcount) * 100)
-        Write-Progress -Activity "Decline Unused Updates" -Status "Checking if update #$i/$cmpatchlistcount - $($item.LocalizedDisplayName)" -PercentComplete $percentComplete -CurrentOperation "$($percentComplete)% complete"
-        Try{
-            $patch = $WsusServerAdminProxy.getUpdate([guid]$item.CI_UniqueID)
-            if(($patch.IsDeclined -eq $false) -and ( ($patch.CreationDate) -lt (get-date).AddDays(-30))){
-                if(updatesDeclined -eq 0){
-                    Copy-Item -Path $outDeclinedList -Destination $outDeclineListBackup -Force
-                }
-                "$($patch.Id.UpdateId.Guid), $($patch.Id.RevisionNumber), $($patch.Title), $($patch.KnowledgeBaseArticles), $($patch.SecurityBulletins), $($patch.HasSupersededUpdates)" | Out-File $outDeclineList -Append
-                Write-Progress -Activity "Decline Unused Updates" -Status "Declining update #$i/$cmpatchlistcount - $($item.LocalizedDisplayName)" -PercentComplete $percentComplete -CurrentOperation "$($percentComplete)% complete"
-                If(!($skipdecline)){$patch.Decline()}
-                $updatesDeclined++
-            }else{
-                Write-Progress -Activity "Decline Unused Updates" -Status "Update #$i/$cmpatchlistcount - $($item.LocalizedDisplayName) is already declined or was recieved withing the last 30 days" -PercentComplete $percentComplete -CurrentOperation "$($percentComplete)% complete"
-            }
-        }catch{
-        #"$($item.LocalizedDisplayName) was not found in WSUS"
-        Write-Progress -Activity "Decline Unused Updates" -Status "Update #$i/$cmpatchlistcount - $($item.LocalizedDisplayName) was not found in WSUS" -PercentComplete $percentComplete -CurrentOperation "$($percentComplete)% complete"
-        }
+        Remove-Variable patch -ErrorAction silentlycontinue
+        $i++
+        $percentComplete = "{0:N2}" -f (($i/$cmpatchlistcount) * 100)
+        Write-Progress -Activity "Decline Unused Updates" -Status "Checking if update #$i/$cmpatchlistcount - $($item.LocalizedDisplayName)" -PercentComplete $percentComplete -CurrentOperation "$($percentComplete)% complete"
+        Try{
+            $patch = $WsusServerAdminProxy.getUpdate([guid]$item.CI_UniqueID)
+            if(($patch.IsDeclined -eq $false) -and ( ($patch.CreationDate) -lt (get-date).AddDays(-30) ) ){
+                Write-Progress -Activity "Decline Unused Updates" -Status "Declining update #$i/$cmpatchlistcount - $($item.LocalizedDisplayName)" -PercentComplete $percentComplete -CurrentOperation "$($percentComplete)% complete"
+                "$($patch.Id.UpdateId.Guid), $($patch.Id.RevisionNumber), $($patch.Title), $($patch.KnowledgeBaseArticles), $($patch.SecurityBulletins), $($patch.HasSupersededUpdates)" | Out-File $outDeclineList -Append
+                If($Decline){$patch.Decline()}
+                $updatesDeclined++
+            }else{
+                Write-Progress -Activity "Decline Unused Updates" -Status "Update #$i/$cmpatchlistcount - $($item.LocalizedDisplayName) is already declined or was recieved withing the last 30 days" -PercentComplete $percentComplete -CurrentOperation "$($percentComplete)% complete"
+            }
+        }catch{
+        #"$($item.LocalizedDisplayName) was not found in WSUS"
+        Write-Progress -Activity "Decline Unused Updates" -Status "Update #$i/$cmpatchlistcount - $($item.LocalizedDisplayName) was not found in WSUS" -PercentComplete $percentComplete -CurrentOperation "$($percentComplete)% complete"
+        }
     }
-    If($skipdecline){"$updatesDeclined updates would have been declined"}else{"$updatesDeclined updates were declined"}
+    If($Decline -eq $False){"$updatesDeclined updates would have been declined"}else{"$updatesDeclined updates were declined"}
 }
 Unpublish-UnUsedCMPatches @PSBOundParameters
