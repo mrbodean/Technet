@@ -5,7 +5,7 @@
     Script decline updates in WSUS that are not deployed and not required by any clients
     in Configuration Manager and that are older than 30 days. 
 .EXAMPLE
-    Unpublish-UnUsedCMPatches -SiteCode LAB -SiteServer LabServer -WSUSServer LabWSUS
+    Unpublish-UnUsedCMPatches -SiteCode LAB -SCCMServer LabServer -WSUSServer LabWSUS
 .NOTES
     Author Jon Warnken
     @MrBoDean
@@ -21,8 +21,7 @@ Param(
         # Use SSL for the WSUS connection. Default value is $False
         [bool]$UseSSL = $False,
         # Port to use for WSUS connection. Default value is 8530
-        [Parameter(Mandatory=$true,
-                   ValueFromPipelineByPropertyName=$true)]
+        [Parameter(Mandatory=$true)]
         [int]$PortNumber = 8530,
         # Configuration Manager Site Server with SMS Provider role
         [Parameter(Mandatory=$true,
@@ -33,8 +32,7 @@ Param(
                    ValueFromPipelineByPropertyName=$true)]
         [string]$SiteCode,
         # Skip the decline step. Defaults to $True for safety
-        [Parameter(Mandatory=$true,
-                   ValueFromPipelineByPropertyName=$true)]
+        [Parameter(Mandatory=$true)]
         [bool]$skipdecline = $True
     )
 Function Unpublish-UnUsedCMPatches{
@@ -47,8 +45,7 @@ Function Unpublish-UnUsedCMPatches{
         # Use SSL for the WSUS connection. Default value is $False
         [bool]$UseSSL = $False,
         # Port to use for WSUS connection. Default value is 8530
-        [Parameter(Mandatory=$true,
-                   ValueFromPipelineByPropertyName=$true)]
+        [Parameter(Mandatory=$true)]
         [int]$PortNumber = 8530,
         # Configuration Manager Site Server with SMS Provider role
         [Parameter(Mandatory=$true,
@@ -59,15 +56,20 @@ Function Unpublish-UnUsedCMPatches{
                    ValueFromPipelineByPropertyName=$true)]
         [string]$SiteCode,
         # Skip the decline step. Defaults to $True for safety
-        [Parameter(Mandatory=$true,
-                   ValueFromPipelineByPropertyName=$true)]
+        [Parameter(Mandatory=$true)]
         [bool]$skipdecline = $True
     )
      
-    $cmpatchlist = Get-WmiObject -Namespace "root\SMS\site_$SiteCode" -class SMS_SoftwareUpdate  -ComputerName $SCCMServer|Select-Object LocalizedDisplayName, CI_UniqueID, IsDeployed 
-    #$cmpatchlist = import-csv -Path C:\temp\patchlist.csv
+    $cmpatchlist = Get-WmiObject -Namespace "root\SMS\site_$SiteCode" -class SMS_SoftwareUpdate -ComputerName $SCCMServer|Select-Object LocalizedDisplayName, CI_UniqueID, IsDeployed 
     $cmpatchlistcount = $cmpatchlist.Count
+    If($cmpatchlistcount -eq 0){ 
+        Throw "Error Collecting patches from $SCCMServer"
+        return
+    }
     "Found $cmpatchlistcount updates on $SCCMServer"
+    $cmpatchlist = $cmpatchlist|?{($_.IsDeployed -eq $false) -and ($_.NumMissing -eq 0)}
+    $cmpatchlistcount = $cmpatchlist.Count
+    "Found $cmpatchlistcount updates on $SCCMServer that are not deployed and not required. These will be evaluated to determine if they are older then 30 days and not declined. "
     #Connect to the WSUS 3.0 interface.
     [reflection.assembly]::LoadWithPartialName("Microsoft.UpdateServices.Administration") | out-null
     If($? -eq $False)
