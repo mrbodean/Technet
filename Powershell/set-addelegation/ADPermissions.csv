@@ -1,0 +1,8 @@
+OU,Delegate,Delegate Type,ADRights,AccessControlType,Inheritance,InheritanceType,ObjectType
+"OU=Accounts,DC=LAB,DC=INT",stduser,user,"ReadProperty,WriteProperty,CreateChild,DeleteChild",Allow,,,
+"OU=Accounts,DC=LAB,DC=INT",SC_Accounts_ResetPwd,group,ExtendedRight,Allow,Descendents,user,Reset Password
+"OU=Services,OU=Accounts,DC=LAB,DC=INT",SC_Accounts_Services_ResetPwd,group,ExtendedRight,Allow,Descendents,user,Reset Password
+"OU=Accounts,DC=LAB,DC=INT",stduser,user,,Remove,,,
+"OU=Services,OU=Accounts,DC=LAB,DC=INT",stduser,user,,Remove,,,
+"OU=Accounts,DC=LAB,DC=INT",stduser1,user,,Remove,,,
+"CN=Computers,DC=LAB,DC=INT",ADUC-Computers-Computer-All Attributes,group,computer,Allow,Descendents,computer,
