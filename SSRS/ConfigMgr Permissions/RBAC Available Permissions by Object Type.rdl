@@ -1,0 +1,575 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner" xmlns:cl="http://schemas.microsoft.com/sqlserver/reporting/2010/01/componentdefinition" xmlns="http://schemas.microsoft.com/sqlserver/reporting/2010/01/reportdefinition">
+  <AutoRefresh>0</AutoRefresh>
+  <DataSources>
+    <DataSource Name="ID5C6358F24BB64a1bA16E8D96795D8602">
+      <DataSourceReference>{5C6358F2-4BB6-4a1b-A16E-8D96795D8602}</DataSourceReference>
+      <rd:SecurityType>None</rd:SecurityType>
+      <rd:DataSourceID>70fad033-1e16-493f-bfa4-568fdeb3a927</rd:DataSourceID>
+    </DataSource>
+  </DataSources>
+  <DataSets>
+    <DataSet Name="DataSet1">
+      <Query>
+        <DataSourceName>ID5C6358F24BB64a1bA16E8D96795D8602</DataSourceName>
+        <CommandText>select RBAC_objTyp.ObjectTypeName As 'Permission Type Name',RBAC_objOps.OperationName As 'Operation', RBAC_objOps.BitFlag,
+
+case 
+	when RBAC_objTyp.ObjectTypeName = 'SMS_Subscription' then 'Alert Subscription'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_Alert' then 'Alerts'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_AntimalwareSettings' then 'Antimalware Policy'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_Application' then 'Application'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_BootImagePackage' then 'Boot Image Package'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_Boundary' then 'Boundaries'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_BoundaryGroup' then 'Boundary Group'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_TrustedRootCertificateSettings' then 'Certificate Profile'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_ClientSettings' then 'Client Agent Setting'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_CloudSubscription' then 'Cloud Subscription'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_Collection' then 'Collection'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_CommunicationsProvisioningSettings' then 'Communications Provisioning Profile'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_StateMigration' then 'Computer Association'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_ConfigurationItem' then 'Configuration Item'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_ConfigurationPolicy' then 'Configuration Policy'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_Template' then 'Deployment Templates'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_Driver' then 'Device Drivers'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_DistributionPointInfo' then 'Distribution Point'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_DistributionPointGroup' then 'Distribution Point Group'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_DriverPackage' then 'Driver Package'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_FirewallSettings' then 'Firewall Settings'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_GlobalCondition' then 'Global Condition'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_InventoryReport' then 'Inventory Reports'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_MigrationJob' then 'Migration Job'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_MigrationSiteMapping' then 'Migration Site-to-Site Mappings'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_DeviceEnrollmentProfile' then 'Mobile Device Enrollment Profiles'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_ImagePackage' then 'Operating System Image'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_OperatingSystemInstallPackage' then 'Operating System Upgrade Package'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_Package' then 'Package'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_Query' then 'Query'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_Role' then 'Security Roles'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_SecuredCategory' then 'Security Scopes'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_RemoteConnectionSettings' then 'Settings for remote connection profile'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_UserStateManagementSettings' then 'Settings for user data and profile management'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_WinRTSideLoadingKey' then 'Sideload Key'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_Site' then 'Site'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_MeteredProductRule' then 'Software Metering Rule'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_AISoftwareList' then 'Software Titles'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_AuthorizationList' then 'Software Update Group'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_SoftwareUpdatesPackage' then 'Software Update Package'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_SoftwareUpdate' then 'Software Updates'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_StatusMessage' then 'Status Messages'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_TaskSequencePackage' then 'Task Sequence Package'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_ClientAuthCertificateSettings' then 'Trusted CA Certificate Profile'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_UserMachineRelationship' then 'User Device Affinities'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_Admin' then 'Users'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_VirtualEnvironment' then 'Virtual Environment'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_VhdPackage' then 'Virtual Hard Disk'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_VpnConnectionSettings' then 'VPN Profile'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_WirelessProfileSettings' then 'Wi-Fi Profile'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_DeviceSettingItem' then 'Windows CE Device Setting Item'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_DeviceSettingPackage' then 'Windows CE Device Setting Package'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_FirewallPolicy' then 'Windows Firewall Policy'
+	when RBAC_objTyp.ObjectTypeName = 'MDM_GenericAppConfiguration' then 'App Configuration Policy'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_WSfBConfigurationData' then 'Windows Store For Business configuration data'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_HealthAttestationDetails' then 'Health Attestation'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_ClientPfxCertificate' then 'PFX Certificate'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_CM_UpdatePackages' then 'Update Packages'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_CompliancePolicySettings' then 'Compliance Policy'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_AppRestrictionSettings' then 'App Restriction Profile'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_ConditionAccessManagement' then 'Conditional Access Management Profiles'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_CustomConfigurationSettings' then 'Custom Configuration Settings'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_DeviceThreatProtectionSettings' then 'Device Threat Protection Settings'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_WindowsDefenderApplicationGuard' then 'Windows Defender Advanced Threat Protection'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_AllowOrDenyAppsSetting' then 'Setting to Allow Or Deny Apps'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_DeviceGuardSettings' then 'Device Guard Polices'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_MDMAppleVppLicense' then 'Apple Vpp License class'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_MDMAppleVppToken' then 'Apple Vpp Token'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_EditionUpgradeSettings' then 'Settings for Edition Upgrade Polices'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_MAMPolicyTemplate' then 'MAM Policy'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_PassportForWorkProfileSettings' then 'Windows Hello for Business Profile'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_TermsAndConditionsSettings' then 'Terms And Conditions'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_UnManagedApps' then 'UnManaged Apps'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_AdvancedThreatProtectionSettings' then 'Setting for Windows Defender Application Guard'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_MDMDeviceCategory' then 'MDM Device Category'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_MDMCorpOwnedDevices' then 'Corporate Owned Devices'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_MDMCorpEnrollmentProfiles' then 'Corporate Enrollment Profiles'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_MDMDeviceThreat' then 'Device Threat Protection Details'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_PfxCertificateSettings' then 'PFX Certificate Profile'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_MDMBulkEnrollmentPackages' then 'Windows Bulk Enrollment Packages'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_MDMBulkEnrollmentProfiles' then 'Windows Bulk Enrollment Profiles'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_AfwAccountStatus' then 'Android For Work Account Status'
+	when RBAC_objTyp.ObjectTypeName = 'SMS_PolicyProperty' then 'DCM Policy Profile Secret Data'
+end As 'Console Name'
+from RBAC_ObjectOperations As RBAC_objOps
+inner join RBAC_SecuredObjectTypes As RBAC_objTyp on RBAC_objTyp.ObjectTypeID = RBAC_objOps.ObjectTypeID</CommandText>
+        <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
+      </Query>
+      <Fields>
+        <Field Name="Permission_Type_Name">
+          <DataField>Permission Type Name</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Operation">
+          <DataField>Operation</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="BitFlag">
+          <DataField>BitFlag</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Console_Name">
+          <DataField>Console Name</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+  </DataSets>
+  <ReportSections>
+    <ReportSection>
+      <Body>
+        <ReportItems>
+          <Tablix Name="Tablix6">
+            <TablixBody>
+              <TablixColumns>
+                <TablixColumn>
+                  <Width>3.58333in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>3.53125in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.64583in</Width>
+                </TablixColumn>
+              </TablixColumns>
+              <TablixRows>
+                <TablixRow>
+                  <Height>0.25in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox91">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Console Name</Value>
+                                  <Style>
+                                    <FontFamily>Tahoma</FontFamily>
+                                    <FontSize>11pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox91</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>#7292cc</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#4c68a2</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox92">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Operation</Value>
+                                  <Style>
+                                    <FontFamily>Tahoma</FontFamily>
+                                    <FontSize>11pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox92</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>#7292cc</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#4c68a2</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox94">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Bit Flag</Value>
+                                  <Style>
+                                    <FontFamily>Tahoma</FontFamily>
+                                    <FontSize>11pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox94</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>#7292cc</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#4c68a2</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.25in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Console_Name">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!Console_Name.Value</Value>
+                                  <Style>
+                                    <FontFamily>Tahoma</FontFamily>
+                                    <Color>#4d4d4d</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Console_Name</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>#e5e5e5</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Operation">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!Operation.Value</Value>
+                                  <Style>
+                                    <FontFamily>Tahoma</FontFamily>
+                                    <Color>#4d4d4d</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Operation</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>#e5e5e5</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="BitFlag">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!BitFlag.Value</Value>
+                                  <Style>
+                                    <FontFamily>Tahoma</FontFamily>
+                                    <Color>#4d4d4d</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>BitFlag</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>#e5e5e5</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+              </TablixRows>
+            </TablixBody>
+            <TablixColumnHierarchy>
+              <TablixMembers>
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+              </TablixMembers>
+            </TablixColumnHierarchy>
+            <TablixRowHierarchy>
+              <TablixMembers>
+                <TablixMember>
+                  <TablixHeader>
+                    <Size>3.60417in</Size>
+                    <CellContents>
+                      <Textbox Name="Textbox96">
+                        <CanGrow>true</CanGrow>
+                        <KeepTogether>true</KeepTogether>
+                        <Paragraphs>
+                          <Paragraph>
+                            <TextRuns>
+                              <TextRun>
+                                <Value>Permission Type Name</Value>
+                                <Style>
+                                  <FontFamily>Tahoma</FontFamily>
+                                  <FontSize>11pt</FontSize>
+                                  <FontWeight>Bold</FontWeight>
+                                  <Color>White</Color>
+                                </Style>
+                              </TextRun>
+                            </TextRuns>
+                            <Style />
+                          </Paragraph>
+                        </Paragraphs>
+                        <rd:DefaultName>Textbox96</rd:DefaultName>
+                        <Style>
+                          <Border>
+                            <Color>#7292cc</Color>
+                            <Style>Solid</Style>
+                          </Border>
+                          <BackgroundColor>#4c68a2</BackgroundColor>
+                          <PaddingLeft>2pt</PaddingLeft>
+                          <PaddingRight>2pt</PaddingRight>
+                          <PaddingTop>2pt</PaddingTop>
+                          <PaddingBottom>2pt</PaddingBottom>
+                        </Style>
+                      </Textbox>
+                    </CellContents>
+                  </TablixHeader>
+                  <TablixMembers>
+                    <TablixMember />
+                  </TablixMembers>
+                  <KeepWithGroup>After</KeepWithGroup>
+                </TablixMember>
+                <TablixMember>
+                  <Group Name="Permission_Type_Name">
+                    <GroupExpressions>
+                      <GroupExpression>=Fields!Permission_Type_Name.Value</GroupExpression>
+                    </GroupExpressions>
+                  </Group>
+                  <SortExpressions>
+                    <SortExpression>
+                      <Value>=Fields!Permission_Type_Name.Value</Value>
+                    </SortExpression>
+                  </SortExpressions>
+                  <TablixHeader>
+                    <Size>3.60417in</Size>
+                    <CellContents>
+                      <Textbox Name="Permission_Type_Name">
+                        <CanGrow>true</CanGrow>
+                        <KeepTogether>true</KeepTogether>
+                        <Paragraphs>
+                          <Paragraph>
+                            <TextRuns>
+                              <TextRun>
+                                <Value>=Fields!Permission_Type_Name.Value</Value>
+                                <Style>
+                                  <FontFamily>Tahoma</FontFamily>
+                                  <FontWeight>Bold</FontWeight>
+                                  <Color>#465678</Color>
+                                </Style>
+                              </TextRun>
+                            </TextRuns>
+                            <Style />
+                          </Paragraph>
+                        </Paragraphs>
+                        <rd:DefaultName>Permission_Type_Name</rd:DefaultName>
+                        <Style>
+                          <Border>
+                            <Color>#c6daf8</Color>
+                            <Style>Solid</Style>
+                          </Border>
+                          <BackgroundColor>#9eb6e4</BackgroundColor>
+                          <PaddingLeft>2pt</PaddingLeft>
+                          <PaddingRight>2pt</PaddingRight>
+                          <PaddingTop>2pt</PaddingTop>
+                          <PaddingBottom>2pt</PaddingBottom>
+                        </Style>
+                      </Textbox>
+                    </CellContents>
+                  </TablixHeader>
+                  <TablixMembers>
+                    <TablixMember>
+                      <Group Name="Details" />
+                    </TablixMember>
+                  </TablixMembers>
+                </TablixMember>
+              </TablixMembers>
+            </TablixRowHierarchy>
+            <DataSetName>DataSet1</DataSetName>
+            <Top>0.4in</Top>
+            <Height>0.5in</Height>
+            <Width>12.36458in</Width>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+            </Style>
+          </Tablix>
+          <Textbox Name="ReportTitle">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>Available Permissions by Object Type</Value>
+                    <Style>
+                      <FontFamily>Verdana</FontFamily>
+                      <FontSize>20pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style />
+              </Paragraph>
+            </Paragraphs>
+            <rd:WatermarkTextbox>Title</rd:WatermarkTextbox>
+            <rd:DefaultName>ReportTitle</rd:DefaultName>
+            <Height>0.4in</Height>
+            <Width>5.5in</Width>
+            <ZIndex>1</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
+        </ReportItems>
+        <Height>2.25in</Height>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+        </Style>
+      </Body>
+      <Width>29in</Width>
+      <Page>
+        <PageFooter>
+          <Height>0.45in</Height>
+          <PrintOnFirstPage>true</PrintOnFirstPage>
+          <PrintOnLastPage>true</PrintOnLastPage>
+          <ReportItems>
+            <Textbox Name="ExecutionTime">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>=Globals!ExecutionTime</Value>
+                      <Style />
+                    </TextRun>
+                  </TextRuns>
+                  <Style>
+                    <TextAlign>Right</TextAlign>
+                  </Style>
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>ExecutionTime</rd:DefaultName>
+              <Top>0.2in</Top>
+              <Left>4in</Left>
+              <Height>0.25in</Height>
+              <Width>2in</Width>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+          </ReportItems>
+          <Style>
+            <Border>
+              <Style>None</Style>
+            </Border>
+          </Style>
+        </PageFooter>
+        <LeftMargin>1in</LeftMargin>
+        <RightMargin>1in</RightMargin>
+        <TopMargin>1in</TopMargin>
+        <BottomMargin>1in</BottomMargin>
+        <Style />
+      </Page>
+    </ReportSection>
+  </ReportSections>
+  <rd:ReportUnitType>Inch</rd:ReportUnitType>
+  <rd:ReportID>30eb06e7-a325-423e-8b5c-2634c8708eda</rd:ReportID>
+</Report>
