@@ -1,0 +1,1 @@
+if(get-appxpackage -Name "Microsoft.AAD.BrokerPlugin"){exit 0}else{exit 1}
