@@ -1,12 +1,31 @@
-﻿Function Get-CMAutoPilotHash{
+<# This Sample Code is provided for the purpose of illustration only and is not intended to be used in a production environment. 
+ THIS SAMPLE CODE AND ANY RELATED INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING 
+ BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.  
+ We grant You a nonexclusive, royalty-free right to use and modify the Sample Code and to reproduce # 
+ and distribute the object code form of the Sample Code, provided that You agree: (i) to not use Our name, logo, or trademarks to market
+Your software product in which the Sample Code is embedded; (ii) to include a valid copyright notice on Your software product in which the Sample Code
+is embedded; and (iii) to indemnify, hold harmless, and defend Us and Our suppliers from and against any claims or lawsuits, including attorneys’ fees,
+that arise or result from the # use or distribution of the Sample Code.
+#>	
+param(
+    [Parameter(Mandatory=$False)] [String] $SMSProvider = "localhost",
+    [Parameter(Mandatory=$False)] [String] $SiteCode = "",
+    [Parameter(Mandatory=$False)] [System.Management.Automation.PSCredential] $Credential = $null,
+    [Parameter(Mandatory=$False)] [String] $GroupTag = "",
+    [Parameter(Mandatory=$False)] [String] $OutputFile = "",
+    [Parameter(Mandatory=$True)] [String] $CollectionID
+)
+
+
+Function Get-CMAutoPilotHash{
 [CmdletBinding(DefaultParameterSetName = 'Default')]
 param(
     [Parameter(Mandatory=$False)] [String] $SMSProvider = "localhost",
     [Parameter(Mandatory=$True)] [String] $SiteCode = "",
     [Parameter(Mandatory=$False)] [System.Management.Automation.PSCredential] $Credential = $null,
     [Parameter(Mandatory=$False)] [String] $GroupTag = "",
-    [Parameter(Mandatory=$False)] [String] $OutputFile = "",
-    [Parameter(Mandatory=$False)] [Switch] $Force = $false,
+    #[Parameter(Mandatory=$False)] [String] $OutputFile = "",
+    #[Parameter(Mandatory=$False)] [Switch] $Force = $false,
     [Parameter(Mandatory=$True, ValueFromPipeline=$True, ValueFromPipelineByPropertyName=$True)] [String[]] $ResourceID
 )
 Begin {
@@ -61,9 +80,8 @@ Function Get-AutoPilotInfo{
 [CmdletBinding()]
 param(
     [Parameter(Mandatory=$True,ValueFromPipeline=$True, ValueFromPipelineByPropertyName=$True)] [ValidateScript({$_ -ne ''})] [String]$SerialNumber,
-    [Parameter(Mandatory=$True,ValueFromPipeline=$True, ValueFromPipelineByPropertyName=$True)] [ValidateScript({$_ -ne ''})] [String]$HardwareHash
-    # WindowsProductID is a parameter for Get-AutopilotDevice. This function does not use it but it is present as a comment for the future 
-    # [Parameter(Mandatory=$True,ValueFromPipeline=$True, ValueFromPipelineByPropertyName=$True)] [AllowEmptyString()] [String]$WindowsProductID = ""
+    [Parameter(Mandatory=$True,ValueFromPipeline=$True, ValueFromPipelineByPropertyName=$True)] [ValidateScript({$_ -ne ''})] [String]$HardwareHash,
+    [Parameter(Mandatory=$True,ValueFromPipeline=$True, ValueFromPipelineByPropertyName=$True)] [AllowEmptyString()] [String]$WindowsProductID = ""
 )
 Write-Verbose "Get Device info for Serial Number $SerialNumber"
     If($SerialNumber){
@@ -73,3 +91,74 @@ Write-Verbose "Get Device info for Serial Number $SerialNumber"
     }
 }
 
+$startlocation = Get-Location
+
+If(!(Get-Module -Name WindowsAutoPilotIntune)){
+    "Missing Intune Graph Module"
+    Install-Module -Name WindowsAutoPilotIntune -Scope AllUsers -Force
+}
+
+$pth = Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\SMS\Setup" | 
+  Select -ExpandProperty "UI Installation Directory"
+
+$psd = "$pth\bin\ConfigurationManager.psd1"
+
+if (!(Test-Path $psd)) {
+  "Unable to locate Configuration Manager console install. This is required!"
+  Exit
+}
+else {
+  if (Get-Module ConfigurationManager) {
+  }
+  else {
+    "loading ConfigMgr PS module..."
+    Import-Module $psd
+  }
+}
+If(!($SiteCode)){$SiteCode = Get-PSDrive -PSProvider CMSite}
+cd "$($SiteCode):"
+
+If(!($OutputFile)){
+    #Connect to Intune
+    Write-Host "Connecting to Intune"
+    Connect-MSGraph -Quiet
+    Write-Host ('_'*70)
+}
+
+$clients = Get-CMDevice -CollectionID $CollectionID
+$HardwareHashes = $clients |%{
+    if($CMInfo){Remove-Variable -Name CMInfo}
+    $CMInfo = Get-CMAutoPilotHash -SiteCode $SiteCode -ResourceID $_.ResourceID -SMSProvider $SMSProvider -Credential $Credential -GroupTag $GroupTag
+    $CMInfo
+}
+
+
+If($OutputFile){
+    Write-Host "Exporting to $Outputfile"
+
+    $HardwareHashes|Export-Csv -NoTypeInformation -Path $OutputFile
+    Set-Location $startlocation
+    Exit
+}
+
+
+Foreach($Device in $HardwareHashes){
+    #check for exisiting Autopilot registration
+    $APinfo = $device|Get-AutoPilotInfo
+
+    #existing Device
+    If($APinfo){
+        If($GroupTag -eq $APinfo.groupTag){
+            Write-Host "Group Tag '$($APinfo.groupTag)' is correct for $($APinfo.serialNumber)"
+        }else{
+            Set-AutopilotDevice -id $APInfo.id -groupTag $GroupTag
+            #Write-Host "Set-AutopilotDevice -id $($APInfo.id) -groupTag $GroupTag"
+        }
+    }
+    #new Device
+    else{
+        Add-AutopilotImportedDevice -serialNumber $CMInfo.SerialNumber -hardwareIdentifier $CMInfo.HardwareHash -groupTag $GroupTag
+        #Write-Host "Add-AutopilotImportedDevice -serialNumber $($CMInfo.SerialNumber) -hardwareIdentifier $($CMInfo.HardwareHash) -groupTag $GroupTag"
+    }
+}
+Set-Location $startlocation
