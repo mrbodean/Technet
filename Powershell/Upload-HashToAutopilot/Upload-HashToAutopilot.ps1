@@ -152,13 +152,13 @@ Foreach($Device in $HardwareHashes){
             Write-Host "Group Tag '$($APinfo.groupTag)' is correct for $($APinfo.serialNumber)"
         }else{
             Set-AutopilotDevice -id $APInfo.id -groupTag $GroupTag
-            #Write-Host "Set-AutopilotDevice -id $($APInfo.id) -groupTag $GroupTag"
+            Write-Verbose "Set-AutopilotDevice -id $($APInfo.id) -groupTag $GroupTag"
         }
     }
     #new Device
     else{
-        Add-AutopilotImportedDevice -serialNumber $CMInfo.SerialNumber -hardwareIdentifier $CMInfo.HardwareHash -groupTag $GroupTag
-        #Write-Host "Add-AutopilotImportedDevice -serialNumber $($CMInfo.SerialNumber) -hardwareIdentifier $($CMInfo.HardwareHash) -groupTag $GroupTag"
+        Add-AutopilotImportedDevice -serialNumber $Device.SerialNumber -hardwareIdentifier $Device.HardwareHash -groupTag $GroupTag
+        Write-Verbose "Uploading Hash for $($Device.SerialNumber)"
     }
 }
 Set-Location $startlocation
