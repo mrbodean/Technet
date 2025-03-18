@@ -24,9 +24,6 @@ Foreach($Comp in $ADComputers){
                  Update-MgDevice -DeviceId $device.ID -BodyParameter $Attributes
             }
         }
-        #$device|Format-List
-        #Invoke-MgRestMethod -Method PATCH -Body $Attributes -Uri "https://graph.microsoft.com/beta/devices/$($device.ID)"
-        #Update-MgDevice -DeviceId $device.ID -BodyParameter $Attributes
         Start-Sleep -Milliseconds 500
     }
 }
