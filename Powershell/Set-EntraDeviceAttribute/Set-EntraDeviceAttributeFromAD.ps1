@@ -11,8 +11,8 @@ Foreach($Comp in $ADComputers){
         if($device.ID){
             Write-Output "Checking $($Device.DisplayName)"
             $Attrib15 = $device.AdditionalProperties.extensionAttributes.extensionAttribute15
-            If($Comp.DistinguishedName -like '*OU=Domain Controllers,DC=demo,DC=contoso,DC=com'){$CAT = "|Server"}
-            Elseif($Comp.DistinguishedName -like '*OU=Servers,DC=demo,DC=contoso,DC=com'){$CAT = "|Server"}
+            If($Comp.DistinguishedName -like '*OU=Servers,DC=demo,DC=contoso,DC=com'){$CAT = "|Server"}
+            Elseif($Comp.DistinguishedName -like '*OU=App Servers,DC=demo,DC=contoso,DC=com'){$CAT = "|Server"}
             Else{$CAT = "|Workstation"}
             if(!($Attrib15 -eq "demo.contoso.com$($CAT)")){
                 $Attributes = @{
