@@ -27,16 +27,16 @@ function Test-ESUKey {
     # Check if the key is Activated
     $ActivationStatus = Get-WmiObject -Query ('SELECT LicenseStatus FROM SoftwareLicensingProduct where PartialProductKey = "{0}"' -f $PartialKey)
     if ($Licensed -and $ActivationStatus.LicenseStatus -eq 1) {
-        Write-Output "ESU key is valid and activated."
+        Write-Verbose "ESU key is valid and activated."
         return $true
     } else {
         if(!$Licensed) {
-          Write-Output "No valid ESU key found"
+          Write-Verbose "No valid ESU key found"
         } else {
-          Write-Output "Valid ESU key found"
+          Write-Verbose "Valid ESU key found"
         }
         If($ActivationStatus.LicenseStatus -ne 1) {
-          Write-Output "ESU key is not activated."
+          Write-Verbose "ESU key is not activated."
         }
         return $false
     }
@@ -46,6 +46,7 @@ function Test-ESUKey {
 If($win10_Y1_Key -and $win10_Y1_Key -ne "Your-Year-1-ESU-Key-Here"){
     # Year 1 ESU Key
     slmgr /ipk $($win10_Y1_Key)
+    Start-sleep -Seconds 30
     slmgr /ato $($win10_Y1_ESU)
     Start-Sleep -Seconds 120
     $ESUY1Status = Test-ESUKey -Key $win10_Y1_Key
@@ -58,6 +59,7 @@ If($win10_Y1_Key -and $win10_Y1_Key -ne "Your-Year-1-ESU-Key-Here"){
 If($win10_Y2_Key -and $win10_Y2_Key -ne "Your-Year-2-ESU-Key-Here"){
     # Year 2 ESU Key
     slmgr /ipk $($win10_Y2_Key)
+    Start-sleep -Seconds 30
     slmgr /ato $($win10_Y2_ESU)
     Start-Sleep -Seconds 120
     $ESUY2Status = Test-ESUKey -Key $win10_Y2_Key
@@ -70,6 +72,7 @@ If($win10_Y2_Key -and $win10_Y2_Key -ne "Your-Year-2-ESU-Key-Here"){
 If($win10_Y3_Key -and $win10_Y3_Key -ne "Your-Year-3-ESU-Key-Here"){
     # Year 3 ESU Key
     slmgr /ipk $($win10_Y3_Key)
+    Start-sleep -Seconds 30
     slmgr /ato $($win10_Y3_ESU)
     Start-Sleep -Seconds 120
     $ESUY3Status = Test-ESUKey -Key $win10_Y3_Key

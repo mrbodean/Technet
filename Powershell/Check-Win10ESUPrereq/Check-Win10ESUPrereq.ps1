@@ -58,7 +58,7 @@ $OSVersion = $OSCurrentersion.CurrentBuild
 if ($OSVersion -eq $Win1022H2) {
     Write-Output "This system is running Windows 10 22H2 (19045). Current version: $OSVersion"
     [byte]$CanApplyWin10ESU = $CanApplyWin10ESU -bor 0x1
-    if ($OSCurrentersion.CurrentBuildRevision -ge $ReqPatch) {
+    if (($OSCurrentersion.CurrentBuildRevision -ge $ReqPatch) -or ($OSCurrentersion.UBR -ge $ReqPatch)) {
     Write-Output "This system has the required patch KB5046613 (19045.5131) installed."
     [byte]$CanApplyWin10ESU = $CanApplyWin10ESU -bor 0x2
     }

@@ -32,16 +32,16 @@ function Test-ESUKey {
     # Check if the key is Activated
     $ActivationStatus = Get-WmiObject -Query ('SELECT LicenseStatus FROM SoftwareLicensingProduct where PartialProductKey = "{0}"' -f $PartialKey)
     if ($Licensed -and $ActivationStatus.LicenseStatus -eq 1) {
-        Write-Output "ESU key is valid and activated."
+        Write-Verbose "ESU key is valid and activated."
         return $true
     } else {
         if(!$Licensed) {
-          Write-Output "No valid ESU key found"
+          Write-Verbose "No valid ESU key found"
         } else {
-          Write-Output "Valid ESU key found"
+          Write-Verbose "Valid ESU key found"
         }
         If($ActivationStatus.LicenseStatus -ne 1) {
-          Write-Output "ESU key is not activated."
+          Write-Verbose "ESU key is not activated."
         }
         return $false
     }
@@ -52,7 +52,7 @@ $OSVersion = $OSCurrentersion.CurrentBuild
 if ($OSVersion -eq $Win1022H2) {
     Write-Output "This system is running Windows 10 22H2 (19045). Current version: $OSVersion"
     [byte]$CanApplyWin10ESU = $CanApplyWin10ESU -bor 0x1
-    if ($OSCurrentersion.CurrentBuildRevision -ge $ReqPatch) {
+    if (($OSCurrentersion.CurrentBuildRevision -ge $ReqPatch) -or ($OSCurrentersion.UBR -ge $ReqPatch)) {
     Write-Output "This system has the required patch KB5046613 (19045.5131) installed."
     [byte]$CanApplyWin10ESU = $CanApplyWin10ESU -bor 0x2
     }
@@ -67,18 +67,21 @@ If($CanApplyWin10ESU -eq 0x3) {
 
 
 
-$ESUY1Status = Test-ESUKey -Key $win10_Y1_Key
+$ESUY1Status = Test-ESUKey -Key $win10_Y1_Key -Verbose
+Write-Verbose "Y1 ESU key status is $ESUY1Status"
 If($win10_Y2_Key -and $win10_Y2_Key -ne "Your-Year-2-ESU-Key-Here") {
-  $ESUY2Status = Test-ESUKey -Key $win10_Y2_Key 
+  $ESUY2Status = Test-ESUKey -Key $win10_Y2_Key -Verbose
 } else {
   $ESUY2Status = $null # No Year 2 ESU key provided
 }
+Write-Verbose "Y2 ESU key status is $ESUY2Status"
 If($win10_Y3_Key -and $win10_Y3_Key -ne "Your-Year-3-ESU-Key-Here") {
-  $ESUY3Status = Test-ESUKey -Key $win10_Y3_Key 
+  $ESUY3Status = Test-ESUKey -Key $win10_Y3_Key -Verbose
 } else {
   $ESUY3Status = $null # No Year 3 ESU key provided
 }
-If(($null -ne $ESUY1Status) -and ($null -eq $ESUY2Status) -and ($null -eq $ESUY3Status)) {
+Write-Verbose "Y3 ESU key status is $ESUY3Status"
+If(($null -ne $ESUY2Status) -and ($null -ne $ESUY3Status)) {
   If($ESUY1Status -and $ESUY2Status -and $ESUY3Status) {
     Write-Output "Y1, Y2, and Y3 ESU keys are valid and activated." 
     exit 0 # All ESU keys are valid and activated
@@ -86,7 +89,7 @@ If(($null -ne $ESUY1Status) -and ($null -eq $ESUY2Status) -and ($null -eq $ESUY3
     Write-Output "Not all ESU keys are valid or activated."
     exit 1 # Not all ESU keys are valid or activated
   }
-}elseif (($null -ne $ESUY1Status) -and ($null -eq $ESUY2Status)){
+}elseif (($null -ne $ESUY2Status)){
   If($ESUY1Status -and $ESUY2Status) {
     Write-Output "Y1 and Y2 ESU keys are valid and activated." 
     exit 0 # All ESU keys are valid and activated
@@ -94,7 +97,7 @@ If(($null -ne $ESUY1Status) -and ($null -eq $ESUY2Status) -and ($null -eq $ESUY3
     Write-Output "Not all ESU keys are valid or activated."
     exit 1 # Not all ESU keys are valid or activated
   }
-}elseif($null -ne $ESUY1Status) {
+}else{
   If($ESUY1Status) {
     Write-Output "Y1 ESU key is valid and activated." 
     exit 0 # Y1 ESU key is valid and activated
@@ -102,7 +105,4 @@ If(($null -ne $ESUY1Status) -and ($null -eq $ESUY2Status) -and ($null -eq $ESUY3
     Write-Output "Y1 ESU key is not valid or activated."
     exit 1 # Y1 ESU key is not valid or activated
   }
-} else {
-  Write-Output "No valid ESU keys found."
-  exit 1 # No valid ESU keys found
 }
