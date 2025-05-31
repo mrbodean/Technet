@@ -45,11 +45,17 @@ function Test-ESUKey {
 
 If($win10_Y1_Key -and $win10_Y1_Key -ne "Your-Year-1-ESU-Key-Here"){
     # Year 1 ESU Key
-    slmgr /ipk $($win10_Y1_Key)
-    Start-sleep -Seconds 30
-    slmgr /ato $($win10_Y1_ESU)
-    Start-Sleep -Seconds 120
     $ESUY1Status = Test-ESUKey -Key $win10_Y1_Key
+    If($ESUY1Status -eq $true){
+        Write-Output "Year 1 ESU Key is valid and activated."
+    }else{
+        Write-Output "Installing and Activating Year 1 ESU Key."
+        slmgr /ipk $($win10_Y1_Key)
+        Start-sleep -Seconds 30
+        slmgr /ato $($win10_Y1_ESU)
+        Start-Sleep -Seconds 120
+    }
+    $ESUY1Status = Test-ESUKey -Key $win10_Y1_Key 
     If($ESUY1Status -eq $true){
         Write-Output "Year 1 ESU Key is valid and activated."
     }else{
@@ -58,10 +64,16 @@ If($win10_Y1_Key -and $win10_Y1_Key -ne "Your-Year-1-ESU-Key-Here"){
   }
 If($win10_Y2_Key -and $win10_Y2_Key -ne "Your-Year-2-ESU-Key-Here"){
     # Year 2 ESU Key
-    slmgr /ipk $($win10_Y2_Key)
-    Start-sleep -Seconds 30
-    slmgr /ato $($win10_Y2_ESU)
-    Start-Sleep -Seconds 120
+    $ESUY2Status = Test-ESUKey -Key $win10_Y2_Key
+    If($ESUY2Status -eq $true){
+        Write-Output "Year 2 ESU Key is valid and activated."
+    }else{
+        Write-Output "Installing and Activating Year 2 ESU Key."
+        slmgr /ipk $($win10_Y2_Key)
+        Start-sleep -Seconds 30
+        slmgr /ato $($win10_Y2_ESU)
+        Start-Sleep -Seconds 120
+    }
     $ESUY2Status = Test-ESUKey -Key $win10_Y2_Key
     If($ESUY2Status -eq $true){
         Write-Output "Year 2 ESU Key is valid and activated."
@@ -71,10 +83,16 @@ If($win10_Y2_Key -and $win10_Y2_Key -ne "Your-Year-2-ESU-Key-Here"){
   }
 If($win10_Y3_Key -and $win10_Y3_Key -ne "Your-Year-3-ESU-Key-Here"){
     # Year 3 ESU Key
-    slmgr /ipk $($win10_Y3_Key)
-    Start-sleep -Seconds 30
-    slmgr /ato $($win10_Y3_ESU)
-    Start-Sleep -Seconds 120
+    $ESUY3Status = Test-ESUKey -Key $win10_Y3_Key
+    If($ESUY3Status -eq $true){
+        Write-Output "Year 3 ESU Key is valid and activated."
+    }else{
+        Write-Output "Installing and Activating Year 3 ESU Key."
+        slmgr /ipk $($win10_Y3_Key)
+        Start-sleep -Seconds 30
+        slmgr /ato $($win10_Y3_ESU)
+        Start-Sleep -Seconds 120
+    }
     $ESUY3Status = Test-ESUKey -Key $win10_Y3_Key
     If($ESUY3Status -eq $true){
         Write-Output "Year 3 ESU Key is valid and activated."
@@ -85,7 +103,14 @@ If($win10_Y3_Key -and $win10_Y3_Key -ne "Your-Year-3-ESU-Key-Here"){
 If($ESUY1Status -and $ESUY2Status -and $ESUY3Status) {
     Write-Output "All ESU keys are valid and activated."
     exit 0 # All ESU keys are valid and activated
-} else {
+} elseif($ESUY1Status -and $ESUY2Status){
+    Write-Output "All ESU keys are valid and activated."
+    exit 0 # All ESU keys are valid and activated
+} elseif($ESUY1Status){
+    Write-Output "All ESU keys are valid and activated."
+    exit 0 # All ESU keys are valid and activated
+}
+ else {
     Write-Output "Not all ESU keys are valid or activated."
     exit 1 # Not all ESU keys are valid or activated
 }

@@ -67,8 +67,8 @@ If($CanApplyWin10ESU -eq 0x3) {
 
 
 
-$ESUY1Status = Test-ESUKey -Key $win10_Y1_Key #-Verbose #Verbose commented out for Win32 detection if testing manualy, it may ver uncommented for tracing
-Write-Verbose "Y1 ESU key status is $ESUY1Status"
+$ESUY1Status = Test-ESUKey -Key $win10_Y1_Key -Verbose #Verbose commented out for Win32 detection if testing manualy, it may ver uncommented for tracing
+Write-Output "Y1 ESU key status is $ESUY1Status"
 If($win10_Y2_Key -and $win10_Y2_Key -ne "Your-Year-2-ESU-Key-Here") {
   $ESUY2Status = Test-ESUKey -Key $win10_Y2_Key -Verbose
 } else {
@@ -86,7 +86,7 @@ If(($null -ne $ESUY2Status) -and ($null -ne $ESUY3Status)) {
     Write-Output "Y1, Y2, and Y3 ESU keys are valid and activated." 
     exit 0 # All ESU keys are valid and activated
   } Else {
-    Write-Verbose "Not all ESU keys are valid or activated."
+    Write-Output "Not all ESU keys are valid or activated."
     exit 1 # Not all ESU keys are valid or activated
   }
 }elseif (($null -ne $ESUY2Status)){
@@ -94,7 +94,7 @@ If(($null -ne $ESUY2Status) -and ($null -ne $ESUY3Status)) {
     Write-Output "Y1 and Y2 ESU keys are valid and activated." 
     exit 0 # All ESU keys are valid and activated
   } Else {
-    Write-Verbose "Not all ESU keys are valid or activated."
+    Write-Output "Not all ESU keys are valid or activated."
     exit 1 # Not all ESU keys are valid or activated
   }
 }else{
