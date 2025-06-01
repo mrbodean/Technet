@@ -61,14 +61,14 @@ if ($OSVersion -eq $Win1022H2) {
 If($CanApplyWin10ESU -eq 0x3) {
     Write-Verbose "This system meets the prerequisites for Windows 10 ESU."
 } Else {
-    Write-Verbose "This system does not meet the prerequisites for Windows 10 ESU. Current version: $OSVersion, Current patch: $($OSCurrentersion.CurrentBuildRevision) Required version: $Win1022H2, Required patch: $ReqPatch"
+    Write-Output "This system does not meet the prerequisites for Windows 10 ESU. Current version: $OSVersion, Current patch: $($OSCurrentersion.CurrentBuildRevision) Required version: $Win1022H2, Required patch: $ReqPatch"
     exit 1 # Exiting without checking the for the ESU Activation status and this will trigger the install but that script will exit out as well.
 }
 
 
 
 $ESUY1Status = Test-ESUKey -Key $win10_Y1_Key -Verbose #Verbose commented out for Win32 detection if testing manualy, it may ver uncommented for tracing
-Write-Output "Y1 ESU key status is $ESUY1Status"
+Write-Verbose "Y1 ESU key status is $ESUY1Status"
 If($win10_Y2_Key -and $win10_Y2_Key -ne "Your-Year-2-ESU-Key-Here") {
   $ESUY2Status = Test-ESUKey -Key $win10_Y2_Key -Verbose
 } else {
@@ -102,7 +102,7 @@ If(($null -ne $ESUY2Status) -and ($null -ne $ESUY3Status)) {
     Write-Output "Y1 ESU key is valid and activated." 
     exit 0 # Y1 ESU key is valid and activated
   } Else {
-    Write-Verbose "Y1 ESU key is not valid or activated."
+    Write-Output "Y1 ESU key is not valid or activated."
     exit 1 # Y1 ESU key is not valid or activated
   }
 }
